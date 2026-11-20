@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "877524999",
+    "project_id": "recogetodo-b56cf",
+    "storage_bucket": "recogetodo-b56cf.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:877524999:android:f5ff49a340482ae02d12a2",
+        "android_client_info": {
+          "package_name": "com.example.rodrigo_moraga_proyecto"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "877524999-tp3hbtdrm2gjlp7vej7dbbqgfjti9fi9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.rodrigo_moraga_proyecto",
+            "certificate_hash": "624b3179de1ec024209c208356169f4711494647"
+          }
+        },
+        {
+          "client_id": "877524999-ahffstieto4q5csl5p5opop4clv733iv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCtcjGwAATQ0xVAqVgoBvtsSuN2d3HCz6Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "877524999-ahffstieto4q5csl5p5opop4clv733iv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
