@@ -5,6 +5,8 @@ import 'package:rodrigo_moraga_proyecto/pages/mis_publicaciones.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:rodrigo_moraga_proyecto/services/fs_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:rodrigo_moraga_proyecto/utils/fecha_format.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -15,7 +17,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final buscarCtrl = TextEditingController();
-  final fs = FsService();
+  final fs = FsService();  
 
   String textoBusqueda = '';
 
@@ -24,12 +26,13 @@ class _HomePageState extends State<HomePage> {
     buscarCtrl.dispose();
     super.dispose();
   }
-
+  // Función para mostrar el detalle de la publicación en un cuadro de diálogo.
   void mostrarDetalle(Map<String, dynamic> publicacion) {
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
+          
           title: Text('Detalle de publicación'),
           content: SingleChildScrollView(
             child: Column(
@@ -40,10 +43,43 @@ class _HomePageState extends State<HomePage> {
                     borderRadius: BorderRadius.circular(12),
                     child: Image.memory(
                       (publicacion['foto'] as Blob).bytes,
+                      height: 200,
                       width: double.infinity,
                       fit: BoxFit.contain,
                     ),
                   ),
+
+                SizedBox(height: 16),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Tipo: ${publicacion['tipo']} - ${publicacion['categoria']}',
+                      style: TextStyle(fontSize: 10, color: Colors.grey[700]),
+                    ),
+                    SizedBox(width: 10),
+                    Text(
+                      'Estado: ${publicacion['estado']}',
+                      style: TextStyle(fontSize: 10, color: Colors.grey[600]),
+                    ),
+                    
+                  ],
+                ),                
+
+                SizedBox(height: 4),
+
+                Text(
+                  'Lugar: ${publicacion['lugar']}',
+                  style: TextStyle(fontSize: 10, color: Colors.grey[700]),
+                ),
+
+                SizedBox(height: 4), 
+
+                Text(
+                  'Publicado por: ${publicacion['nombreUsuario'] ?? 'Usuario'}',
+                  style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                ),
 
                 SizedBox(height: 16),
 
@@ -81,7 +117,7 @@ class _HomePageState extends State<HomePage> {
       },
     );
   }
-
+  // builder principal de la página de inicio, donde se muestran las publicaciones y el buscador.
   @override
   Widget build(BuildContext context) {
     final usuario = FirebaseAuth.instance.currentUser;
@@ -242,6 +278,12 @@ class _HomePageState extends State<HomePage> {
                           stream: fs.publicaciones(),
                           builder: (context, snapshot) {
 
+                            if(snapshot.connectionState == ConnectionState.waiting) {
+                              return Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            }
+
                             if (snapshot.hasError) {
                               return Center(
                                 child: Text(
@@ -277,16 +319,21 @@ class _HomePageState extends State<HomePage> {
                             return ListView.builder(
                               itemCount: documentos.length,
                               itemBuilder: (context, index) {
+
                                 final publicacion =
                                     documentos[index].data()
                                         as Map<String, dynamic>;
 
+                                final fecha = (publicacion['fechaHora'] as Timestamp).toDate();
 
                                 // inciio de los Card de las publicaciones, con la información de la base de datos.
                                 return InkWell(
                                   onTap: () {
+
+                                    
                                     mostrarDetalle(publicacion);
                                   },
+
 
                                   child: Card(
                                     margin: EdgeInsets.only(bottom: 15),
@@ -416,10 +463,7 @@ class _HomePageState extends State<HomePage> {
                                                       SizedBox(width: 4),
                                                       Expanded(
                                                         child: Text(
-                                                          (publicacion['fechaHora'] as Timestamp)
-                                                              .toDate()
-                                                              .toString()
-                                                              .substring(0, 10),
+                                                          '${formatearFecha(fecha)} · ${formatearHora(fecha)}',
                                                         ),
                                                       ),
                                                     ],

@@ -9,6 +9,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rodrigo_moraga_proyecto/services/fs_service.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:rodrigo_moraga_proyecto/utils/fecha_format.dart';
 
 
 
@@ -1328,6 +1329,13 @@ class _MisPublicacionesState extends State<MisPublicaciones> {
         child: StreamBuilder<QuerySnapshot>(
           stream: fs.publicacionesUsuario(usuario.uid),
           builder: (context, snapshot) {
+
+            if(snapshot.connectionState == ConnectionState.waiting) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+
             if (snapshot.hasError) {
               return Center(
                 child: Text('Error al cargar tus publicaciones'),
@@ -1369,6 +1377,8 @@ class _MisPublicacionesState extends State<MisPublicaciones> {
                     itemBuilder: (context, index) {
                       final publicacion = documentos[index].data()
                           as Map<String, dynamic>;
+
+                      final fecha = (publicacion['fechaHora'] as Timestamp).toDate();    
 
                       final publicacionId = documentos[index].id;    
 
@@ -1527,19 +1537,29 @@ class _MisPublicacionesState extends State<MisPublicaciones> {
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 // Fecha arriba
-                                Text(
-                                  (publicacion['fechaHora'] as Timestamp)
-                                      .toDate()
-                                      .toString()
-                                      .substring(0, 10),
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                    color: Colors.white,
-                                  ),
-                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      formatearFecha(fecha),
+                                      style: TextStyle(
+                                        fontSize: 10,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    Text(
+                                      formatearHora(fecha),
+                                      style: TextStyle(
+                                        fontSize: 10,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ],
+                                ),                                
                         
                                 // Estado abajo
                                 Container(
+                                  
                                   padding: EdgeInsets.symmetric(
                                     horizontal: 9,
                                     vertical: 5,
